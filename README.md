@@ -3,12 +3,12 @@
 
 ## 概要
 
-Pyboard から VS1053 を制御して MicroSD カード内の音楽ファイルを再生するものです。
+Pyboard から VS1053b を制御して MicroSD カード内の音楽ファイルを再生するものです。
 
 ![IMG_20210525_012613](https://user-images.githubusercontent.com/14823909/119379389-61960680-bcfa-11eb-983e-c5d256f107e5.jpg)
 
-- VS1053 搭載基板は [SparkFun MP3 and MIDI Breakout - VS1053](https://www.sparkfun.com/products/retired/9943)(現在は販売終了)です。
-- VS1053 とは SPI と XCS, DREQ を接続します。SDISHARE のため XDCS は使用しません。 
+- VS1053b 搭載基板は [SparkFun MP3 and MIDI Breakout - VS1053](https://www.sparkfun.com/products/retired/9943)(現在は販売終了)です。
+- VS1053b とは SPI と XCS, DREQ を接続します。SDISHARE のため XDCS は使用しません。 
 
 ## 動作方法
 
@@ -21,7 +21,7 @@ Pyboard から VS1053 を制御して MicroSD カード内の音楽ファイル�
 ```
 - 例えば MicroSD カード内に音楽ファイルが入った music/ ディレクトリがある場合、directory へ 'music' を指定します。
 - I2S 出力目的のため、アナログ音量の変更等は未実装です。LEFT および RIGHT ピンからはデフォルトの音量で出力されます。
-- vs1053_player/VS1053 クラスは VS1053 のデバイスの操作を実装しているクラスですが、利用していない宣言等はコメントアウトしています。
+- vs1053_player/VS1053 クラスは VS1053b の操作を実装しているクラスですが、利用していない宣言等はコメントアウトしています。
 - Pyboard 上の USB ボタンを押すと再生中の曲をスキップできます。
 - asyncio を利用していますが、run メソッドでブロックしているため、全ファイルの演奏が終了するまで戻ってきません。
   - 強制終了は Ctrl+C です。
