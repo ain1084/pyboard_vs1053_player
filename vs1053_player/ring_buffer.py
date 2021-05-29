@@ -36,7 +36,7 @@ class RingBuffer:
 
     def clear(self):
         self.__used = 0
-        self.__is_detected_end = False
+        self.__is_end = False
         self.__writable.set()
         self.__readable.clear()
         self.__read_pointer.reset()
@@ -53,17 +53,17 @@ class RingBuffer:
     async def write(self, func) -> int:
         await self.__writable.wait()
         result = self.__write_pointer.enumerate(lambda start, end: func(self.__buffer[start:end]), self.__size - self.__used)
-        self.__is_detected_end = result == 0
         self.__update_used(result)
         return result
 
-    def write_end(self):
-        self.__is_detected_end = True
+    def end(self):
+        self.__is_end = True
+        self.__update_used(0)
 
     @micropython.native
     def __update_used(self, result: int):
         self.__used += result
-        is_writable = self.__size - self.__used >= self.__write_threshold and self.__is_detected_end == False
+        is_writable = self.__size - self.__used >= self.__write_threshold and self.__is_end == False
 
         if is_writable:
             self.__writable.set()

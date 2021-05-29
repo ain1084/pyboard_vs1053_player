@@ -13,36 +13,24 @@ class PlayTask:
         result = await asyncio.gather(*(t.__buffer_write(), t.__buffer_read()))
         return result[1]    # Return total bytes of read
 
-    async def __buffer_write(self):
+    async def __buffer_write(self) -> int:
         total = 0
-        result = 0
-        file = self.__file
-        buffer = self.__buffer
-        is_continuous_func = self.__is_continuous_func
         while True:
-            if is_continuous_func != None and not is_continuous_func():
-                buffer.write_end()
-                result = 0
-            else:
-                result = await buffer.write(file.readinto)
-            total += result
+            if self.__is_continuous_func != None and not self.__is_continuous_func():
+                break
+            result = await self.__buffer.write(self.__file.readinto)
             if result == 0:
                 break
+            total += result
+        self.__buffer.end()
         return total
 
-    async def __buffer_read(self):
+    async def __buffer_read(self) -> int:
         total = 0
-        buffer = self.__buffer
         while True:
-            result = await buffer.read(self.__vs1053_write_data)
-            total += result
+            result = await self.__buffer.read(lambda buffer: self.__vs1053.write_data(buffer[:min(len(buffer), 32)]))
             if result == 0:
                 break
-
+            total += result
         self.__vs1053.write_end_fill()
         return total
-
-    def __vs1053_write_data(self, buffer):
-        count = min(len(buffer), 32)
-        self.__vs1053.write_data(buffer[0:count])
-        return count

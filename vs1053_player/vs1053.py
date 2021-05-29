@@ -82,7 +82,7 @@ class VS1053:
         buf[3] = 0x00
         self.__wait_dreq()
         self.__cs.low()
-        self.__spi.write_readinto(buf[0:4], buf[0:4])
+        self.__spi.write_readinto(buf[:4], buf[:4])
         self.__cs.high()
         return (buf[2] << 8) + buf[3]
 
@@ -94,7 +94,7 @@ class VS1053:
         buf[3] = int(value) & 0xff
         self.__wait_dreq()
         self.__cs.low()
-        self.__spi.write(buf[0:4])
+        self.__spi.write(buf[:4])
         self.__cs.high()
 
     def write_wram(self, address:int , value: int):
@@ -124,7 +124,7 @@ class VS1053:
         while count != 0:
             length = min(len(buffer), count)
             self.__wait_dreq()
-            self.__spi.write(buffer[0:length])
+            self.__spi.write(buffer[:length])
             count -= length
         return result
 
@@ -142,8 +142,8 @@ class VS1053:
                 break
         else:
             self.soft_reset()
-        if self.read_register(VS1053.REGISTER.HDAT0) != 0 or self.read_register(VS1053.REGISTER.HDAT1) != 0:
-            raise RuntimeError("Values for SCI_HDAT0 and SCI_HDAT1 must be 0")
+        if self.read_register(VS1053.REGISTER.HDAT0) != 0x0000 or self.read_register(VS1053.REGISTER.HDAT1) != 0x0000:
+            raise RuntimeError("Values for SCI_HDAT0 and SCI_HDAT1 must be 0x0000.")
 
     def soft_reset(self):
         sci_mode = self.read_register(VS1053.REGISTER.MODE)
